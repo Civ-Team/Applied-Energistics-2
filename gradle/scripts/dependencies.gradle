@@ -29,10 +29,6 @@ repositories {
         url "http://dvs1.progwml6.com/files/maven"
     }
 
-    maven {
-        name = "Tesla repo"
-        url "http://maven.mcmoddev.com"
-    }
 
     maven {
         name = "IC2 repo"
@@ -56,7 +52,7 @@ repositories {
 
     maven { // Hwyla
         name 'tehnut'
-        url "http://tehnut.info/maven"
+        url "https://maven.tehnut.info"
     }
 
    	maven { // CraftTweaker
@@ -64,15 +60,15 @@ repositories {
         url "http://maven.blamejared.com/"
     }
 
+    maven {
+        url "https://www.cursemaven.com"
+    }
+
     //maven { // modmaven, maven proxy
     //    name 'modmaven'
     //    url "https://modmaven.k-4u.nl/"
     //}
 
-    maven {
-		name = "CurseForge"
-		url = "https://minecraft.curseforge.com/api/maven/"
-	}
 }
 
 configurations {
@@ -81,19 +77,19 @@ configurations {
 
 dependencies {
     // installable runtime dependencies
-    mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    mods "curse.maven:hwyla-253449:2568751"
     mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
     mods "mcjty.theoneprobe:TheOneProbe-${minecraft_version}:${top_version}"
 
     // compile against provided APIs
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
-    compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    compileOnly "net.darkhax.tesla:Tesla-1.12.2:${tesla_version}"
+    compileOnly "curse.maven:hwyla-253449:2568753"
+    compileOnly "curse.maven:tesla-244651:2487959"
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
     compileOnly "cofh:CoFHCore:${cofhcore_version}:deobf"
     compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}"
-	compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
+	compileOnly "curse.maven:inventory-tweaks-223094:2482482"
     compileOnly "team.chisel.ctm:CTM:${ctm_version}"
 
     // at runtime, use the full JEI jar
