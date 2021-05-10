@@ -21,13 +21,14 @@ buildscript {
         mavenLocal()
         jcenter()
         mavenCentral()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        maven { url = "https://jitpack.io" }
+        maven { url = "https://plugins.gradle.org/m2/" }
+        maven { url = "http://maven.minecraftforge.net/" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath('com.github.DStrand1:ForgeGradle:FG_2.3-SNAPSHOT') {
+            changing = true
+        }
     }
 }
 
