@@ -21,6 +21,7 @@ package appeng.container.implementations;
 
 import java.io.IOException;
 
+import appeng.api.config.PowerMultiplier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -123,7 +124,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 						{
 							final IAEItemStack ais = AEItemStack.fromItemStack( is );
 							ais.setStackSize( 1 );
-							ais.setCountRequestable( (long) ( blk.getIdlePowerUsage() * 100.0 ) );
+							ais.setCountRequestable( (long) PowerMultiplier.CONFIG.multiply( blk.getIdlePowerUsage() * 100.0 ) );
 							list.add( ais );
 						}
 					}
