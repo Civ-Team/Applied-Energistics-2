@@ -19,6 +19,7 @@
 package appeng.block.networking;
 
 
+import appeng.api.config.PowerMultiplier;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
@@ -72,7 +73,7 @@ public class BlockEnergyCell extends AEBaseTileBlock
 
 	public double getMaxPower()
 	{
-		return 200000.0;
+		return 200000.0 * PowerMultiplier.CONFIG.multiplier;
 	}
 
 	@Override

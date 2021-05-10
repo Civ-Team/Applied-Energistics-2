@@ -656,13 +656,14 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 					{
 						continue;
 					}
+					double sum = 0;
 
 					if( !m.isBusy() )
 					{
 						if( ic == null )
 						{
 							final IAEItemStack[] input = details.getInputs();
-							double sum = 0;
+
 
 							for( final IAEItemStack anInput : input )
 							{
@@ -676,9 +677,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 								sum *= Math.pow(4.0, ((DualityInterface)m).getInstalledUpgrades(Upgrades.PATTERN_CAPACITY));
 
 
-							// power...
-							if( eg.extractAEPower( sum, Actionable.MODULATE, PowerMultiplier.CONFIG ) < sum - 0.01 )
-							{
+							// check if there is enough power
+							if( eg.extractAEPower( sum, Actionable.MODULATE, PowerMultiplier.CONFIG ) < sum - 0.01 ) {
 								continue;
 							}
 
@@ -773,6 +773,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 						if( m.pushPattern( details, ic ) )
 						{
+							eg.extractAEPower( sum, Actionable.MODULATE, PowerMultiplier.CONFIG );
 							this.somethingChanged = true;
 							this.remainingOperations--;
 

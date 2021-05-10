@@ -19,6 +19,8 @@
 package appeng.block.networking;
 
 
+import appeng.api.config.PowerMultiplier;
+
 public class BlockDenseEnergyCell extends BlockEnergyCell
 {
 
@@ -30,6 +32,6 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 	@Override
 	public double getMaxPower()
 	{
-		return 200000.0 * 8.0;
+		return 200000.0 * 8.0 * PowerMultiplier.CONFIG.multiplier;
 	}
 }
