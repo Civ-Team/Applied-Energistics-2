@@ -135,6 +135,8 @@ public interface IMaterials
 
 	IItemDefinition blankPattern();
 
+	IItemDefinition cardPatternCapacity();
+
 	IItemDefinition fluidCell1kPart();
 
 	IItemDefinition fluidCell4kPart();

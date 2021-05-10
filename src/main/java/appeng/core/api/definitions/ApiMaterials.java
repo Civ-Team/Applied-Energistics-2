@@ -86,6 +86,7 @@ public final class ApiMaterials implements IMaterials
 	private final IItemDefinition cardRedstone;
 	private final IItemDefinition cardSpeed;
 	private final IItemDefinition cardCapacity;
+	private final IItemDefinition cardPatternCapacity;
 	private final IItemDefinition cardFuzzy;
 	private final IItemDefinition cardInverter;
 	private final IItemDefinition cardCrafting;
@@ -204,6 +205,7 @@ public final class ApiMaterials implements IMaterials
 		this.cardRedstone = new DamagedItemDefinition( "material.card.redstone", materials.createMaterial( MaterialType.CARD_REDSTONE ) );
 		this.cardSpeed = new DamagedItemDefinition( "material.card.acceleration", materials.createMaterial( MaterialType.CARD_SPEED ) );
 		this.cardCapacity = new DamagedItemDefinition( "material.card.capacity", materials.createMaterial( MaterialType.CARD_CAPACITY ) );
+		this.cardPatternCapacity = new DamagedItemDefinition("material.card.patterncapacity", materials.createMaterial( MaterialType.CardPatternCapacity ) );
 		this.cardFuzzy = new DamagedItemDefinition( "material.card.fuzzy", materials.createMaterial( MaterialType.CARD_FUZZY ) );
 		this.cardInverter = new DamagedItemDefinition( "material.card.inverter", materials.createMaterial( MaterialType.CARD_INVERTER ) );
 		this.cardCrafting = new DamagedItemDefinition( "material.card.crafting", materials.createMaterial( MaterialType.CARD_CRAFTING ) );
@@ -422,6 +424,12 @@ public final class ApiMaterials implements IMaterials
 	public IItemDefinition cardCapacity()
 	{
 		return this.cardCapacity;
+	}
+
+	@Override
+	public IItemDefinition cardPatternCapacity()
+	{
+		return this.cardPatternCapacity;
 	}
 
 	@Override

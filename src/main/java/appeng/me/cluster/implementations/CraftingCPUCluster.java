@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import appeng.api.config.Upgrades;
+import appeng.helpers.DualityInterface;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.InventoryCrafting;
@@ -669,6 +671,10 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 									sum += anInput.getStackSize();
 								}
 							}
+							// upgraded interface uses more power
+							if (m instanceof DualityInterface)
+								sum *= Math.pow(4.0, ((DualityInterface)m).getInstalledUpgrades(Upgrades.PATTERN_CAPACITY));
+
 
 							// power...
 							if( eg.extractAEPower( sum, Actionable.MODULATE, PowerMultiplier.CONFIG ) < sum - 0.01 )

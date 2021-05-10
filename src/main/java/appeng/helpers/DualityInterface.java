@@ -127,7 +127,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private final ConfigManager cm = new ConfigManager( this );
 	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, NUMBER_OF_CONFIG_SLOTS );
 	private final AppEngInternalInventory storage = new AppEngInternalInventory( this, NUMBER_OF_STORAGE_SLOTS );
-	private final AppEngInternalInventory patterns = new AppEngInternalInventory( this, NUMBER_OF_PATTERN_SLOTS );
+	private final AppEngInternalInventory patterns = new AppEngInternalInventory( this, NUMBER_OF_PATTERN_SLOTS * 4 );
 	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), AEApi.instance()
 			.storage()
 			.getStorageChannel( IItemStorageChannel.class ) );
@@ -148,7 +148,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.gridProxy = networkProxy;
 		this.gridProxy.setFlags( GridFlags.REQUIRE_CHANNEL );
 
-		this.upgrades = new StackUpgradeInventory( this.gridProxy.getMachineRepresentation(), this, 1 );
+		this.upgrades = new StackUpgradeInventory( this.gridProxy.getMachineRepresentation(), this, 4 );
 		this.cm.registerSetting( Settings.BLOCK, YesNo.NO );
 		this.cm.registerSetting( Settings.INTERFACE_TERMINAL, YesNo.YES );
 
@@ -335,9 +335,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	private void updateCraftingList()
 	{
-		final Boolean[] accountedFor = { false, false, false, false, false, false, false, false, false }; // 9...
-
-		assert ( accountedFor.length == this.patterns.getSlots() );
+		final boolean[] accountedFor = new boolean[patterns.getSlots()];
 
 		if( !this.gridProxy.isReady() )
 		{
