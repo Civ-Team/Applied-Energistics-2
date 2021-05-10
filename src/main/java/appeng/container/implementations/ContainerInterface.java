@@ -21,6 +21,7 @@ package appeng.container.implementations;
 
 import appeng.api.config.Upgrades;
 import appeng.container.slot.*;
+import appeng.util.Platform;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.config.SecurityPermissions;
@@ -30,6 +31,10 @@ import appeng.api.util.IConfigManager;
 import appeng.container.guisync.GuiSync;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+
+import java.util.ArrayList;
 
 
 public class ContainerInterface extends ContainerUpgradeable implements IOptionalSlotHost
@@ -43,11 +48,15 @@ public class ContainerInterface extends ContainerUpgradeable implements IOptiona
 	@GuiSync( 4 )
 	public YesNo iTermMode = YesNo.YES;
 
+	@GuiSync( 7 )
+	public int patternRows;
+
 	public ContainerInterface( final InventoryPlayer ip, final IInterfaceHost te )
 	{
 		super( ip, te.getInterfaceDuality().getHost() );
 
 		this.myDuality = te.getInterfaceDuality();
+		patternRows = getPatternCapacityCardsInstalled();
 		for (int row = 0; row < 4; ++row) {
 			for (int x = 0; x < DualityInterface.NUMBER_OF_PATTERN_SLOTS; x++) {
 				this.addSlotToContainer(new OptionalSlotRestrictedInput(
@@ -86,10 +95,43 @@ public class ContainerInterface extends ContainerUpgradeable implements IOptiona
 	}
 
 	@Override
-	public void detectAndSendChanges()
-	{
-		this.verifyPermissions( SecurityPermissions.BUILD, false );
+	public void detectAndSendChanges() {
+		this.verifyPermissions(SecurityPermissions.BUILD, false);
+
+		if (patternRows != getPatternCapacityCardsInstalled())
+			patternRows = getPatternCapacityCardsInstalled();
+
+		final ArrayList<ItemStack> drops = getRemovedPatterns();
+		if (!drops.isEmpty()) {
+			TileEntity te = myDuality.getHost().getTile();
+			if (te != null)
+				Platform.spawnDrops(te.getWorld(), te.getPos(), drops);
+		}
 		super.detectAndSendChanges();
+	}
+
+	private ArrayList<ItemStack> getRemovedPatterns() {
+		final ArrayList<ItemStack> drops = new ArrayList<>();
+		for (final Object o : this.inventorySlots) {
+			if (o instanceof OptionalSlotRestrictedInput) {
+				final OptionalSlotRestrictedInput fs = (OptionalSlotRestrictedInput) o;
+				if (!fs.isEnabled()) {
+					ItemStack s = fs.inventory.getStackInSlot(fs.getSlotIndex());
+					if (s != null) {
+						drops.add(s);
+						fs.inventory.setInventorySlotContents(fs.getSlotIndex(), null);
+						fs.clearStack();
+					}
+				}
+			}
+		}
+		return drops;
+	}
+
+	public void onUpdate( final String field, final Object oldValue, final Object newValue ) {
+		super.onUpdate(field, oldValue, newValue);
+		if (Platform.isClient() && field.equals("patternRows"))
+			getRemovedPatterns();
 	}
 
 	@Override
