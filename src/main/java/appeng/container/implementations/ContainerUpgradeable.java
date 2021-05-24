@@ -141,7 +141,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
 		final int y = 40;
 		final int x = 80;
-		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
+		this.addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 0, x, y, 0, 0, 0 ) );
 
 		if( this.supportCapacity() )
 		{
@@ -270,6 +270,12 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	@Override
 	public boolean isSlotEnabled( final int idx )
 	{
+		if (this.getUpgradeable().getInstalledUpgrades( Upgrades.ORE_FILTER ) > 0)
+			return false;
+
+		if (idx == 0)
+			return true;
+
 		final int upgrades = this.getUpgradeable().getInstalledUpgrades( Upgrades.CAPACITY );
 
 		if( idx == 1 && upgrades > 0 )

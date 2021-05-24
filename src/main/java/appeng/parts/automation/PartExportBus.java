@@ -19,6 +19,7 @@
 package appeng.parts.automation;
 
 
+import appeng.util.prioritylist.OreFilteredList;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -67,9 +68,7 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
-
-public class PartExportBus extends PartSharedItemBus implements ICraftingRequester
-{
+public class PartExportBus extends PartSharedItemBus implements ICraftingRequester {
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/export_bus_base" );
 
@@ -117,10 +116,8 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	protected TickRateModulation doBusWork()
-	{
-		if( !this.getProxy().isActive() || !this.canDoBusWork() )
-		{
+	protected TickRateModulation doBusWork() {
+		if (!this.getProxy().isActive() || !this.canDoBusWork()) {
 			return TickRateModulation.IDLE;
 		}
 
@@ -132,67 +129,66 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 			final InventoryAdaptor destination = this.getHandler();
 			final IMEMonitor<IAEItemStack> inv = this.getProxy()
 					.getStorage()
-					.getInventory(
-							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+					.getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
 			final IEnergyGrid energy = this.getProxy().getEnergy();
 			final ICraftingGrid cg = this.getProxy().getCrafting();
-			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
-			final SchedulingMode schedulingMode = (SchedulingMode) this.getConfigManager().getSetting( Settings.SCHEDULING_MODE );
+			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE);
+			final SchedulingMode schedulingMode = (SchedulingMode) this.getConfigManager().getSetting(Settings.SCHEDULING_MODE);
 
-			if( destination != null )
-			{
-				int x = 0;
+			if (destination != null) {
+				if (this.getInstalledUpgrades(Upgrades.ORE_FILTER) == 0) {
+					int x = 0;
 
-				for( x = 0; x < this.availableSlots() && this.itemToSend > 0; x++ )
-				{
-					final int slotToExport = this.getStartingSlot( schedulingMode, x );
+					for (x = 0; x < this.availableSlots() && this.itemToSend > 0; x++) {
+						final int slotToExport = this.getStartingSlot(schedulingMode, x);
 
-					final IAEItemStack ais = this.getConfig().getAEStackInSlot( slotToExport );
+						final IAEItemStack ais = this.getConfig().getAEStackInSlot(slotToExport);
 
-					if( ais == null || this.itemToSend <= 0 || this.craftOnly() )
-					{
-						if( this.isCraftingEnabled() )
-						{
-							this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
-									this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
-						}
-						continue;
-					}
-
-					final long before = this.itemToSend;
-
-					if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-					{
-						for( final IAEItemStack o : ImmutableList.copyOf( inv.getStorageList().findFuzzy( ais, fzMode ) ) )
-						{
-							this.pushItemIntoTarget( destination, energy, inv, o );
-							if( this.itemToSend <= 0 )
-							{
-								break;
+						if (ais == null || this.itemToSend <= 0 || this.craftOnly()) {
+							if (this.isCraftingEnabled()) {
+								this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
+										this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
 							}
+							continue;
+						}
+
+						final long before = this.itemToSend;
+
+						if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+							for (final IAEItemStack o : ImmutableList.copyOf(inv.getStorageList().findFuzzy(ais, fzMode))) {
+								this.pushItemIntoTarget(destination, energy, inv, o);
+								if (this.itemToSend <= 0) {
+									break;
+								}
+							}
+						} else {
+							this.pushItemIntoTarget(destination, energy, inv, ais);
+						}
+
+						if (this.itemToSend == before && this.isCraftingEnabled()) {
+							this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
+									this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
 						}
 					}
-					else
-					{
-						this.pushItemIntoTarget( destination, energy, inv, ais );
-					}
 
-					if( this.itemToSend == before && this.isCraftingEnabled() )
-					{
-						this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
-								this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
+					this.updateSchedulingMode(schedulingMode, x);
+				} else if (!oreFilterString.isEmpty()) {
+					if (filterPredicate == null)
+						filterPredicate = OreFilteredList.makeFilter(oreFilterString);
+
+					for (IAEItemStack stack : inv.getStorageList()) {
+						if (stack == null || !this.filterPredicate.test(stack))
+							continue;
+						this.pushItemIntoTarget(destination, energy, inv, stack);
+						if (this.itemToSend <= 0)
+							break;
 					}
 				}
-
-				this.updateSchedulingMode( schedulingMode, x );
-			}
-			else
-			{
+			} else {
 				return TickRateModulation.SLEEP;
 			}
 		}
-		catch( final GridAccessException e )
-		{
+		catch( final GridAccessException e ) {
 			// :P
 		}
 

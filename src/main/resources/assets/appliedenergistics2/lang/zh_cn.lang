@@ -244,6 +244,7 @@ gui.appliedenergistics2.Precise=精确匹配
 gui.appliedenergistics2.Fuzzy=模糊匹配
 gui.appliedenergistics2.SmallFontCraft=Craft
 gui.appliedenergistics2.LargeFontCraft=+
+gui.appliedenergistics2.OreFilterLabel=Ore dictionary filter (may use regex)
 gui.appliedenergistics2.Nothing=无
 
 // GUI Tooltips (GUI提示)
@@ -349,6 +350,8 @@ gui.tooltips.appliedenergistics2.FilterModeClear=在每次打开时清空.
 gui.tooltips.appliedenergistics2.ItemsStored=存储物品: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=可请求: %s
 gui.tooltips.appliedenergistics2.P2PFrequency=频率: %s
+gui.tooltips.appliedenergistics2.OreFilterHint=Filter items using ore dictionary names
+gui.tooltips.appliedenergistics2.OreFilter=Ore Dictionary Filter
 
 // Units (单位)
 gui.appliedenergistics2.units.appliedenergstics=AE
@@ -435,6 +438,7 @@ item.appliedenergistics2.material.card_fuzzy.name=模糊卡
 item.appliedenergistics2.material.card_inverter.name=反相卡
 item.appliedenergistics2.material.card_redstone.name=红石卡
 item.appliedenergistics2.material.card_speed.name=加速卡
+item.appliedenergistics2.material.card_ore_filter.name=Oredictionary Filter Card
 item.appliedenergistics2.material.cell2_spatial_part.name=2³-空间组件
 item.appliedenergistics2.material.cell16_spatial_part.name=16³-空间组件
 item.appliedenergistics2.material.cell128_spatial_part.name=128³-空间组件

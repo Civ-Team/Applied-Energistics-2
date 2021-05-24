@@ -137,6 +137,8 @@ public interface IMaterials
 
 	IItemDefinition cardPatternCapacity();
 
+	IItemDefinition cardOreFilter();
+
 	IItemDefinition fluidCell1kPart();
 
 	IItemDefinition fluidCell4kPart();

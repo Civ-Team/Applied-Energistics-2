@@ -148,7 +148,11 @@ public enum ButtonToolTips
 
 	FilterMode,
 	FilterModeKeep,
-	FilterModeClear;
+	FilterModeClear,
+
+	OreFilter,
+	OreFilterHint;
+
 
 	private final String root;
 

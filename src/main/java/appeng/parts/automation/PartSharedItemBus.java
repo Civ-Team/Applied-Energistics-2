@@ -19,6 +19,8 @@
 package appeng.parts.automation;
 
 
+import appeng.api.storage.data.IAEItemStack;
+import appeng.helpers.IOreFilterable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -34,12 +36,16 @@ import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InventoryAdaptor;
 
+import java.util.function.Predicate;
 
-public abstract class PartSharedItemBus extends PartUpgradeable implements IGridTickable
+
+public abstract class PartSharedItemBus extends PartUpgradeable implements IGridTickable, IOreFilterable
 {
 
 	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
 	private boolean lastRedstone = false;
+	protected String oreFilterString = "";
+	protected Predicate<IAEItemStack> filterPredicate = null;
 
 	public PartSharedItemBus( final ItemStack is )
 	{
@@ -47,8 +53,11 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	}
 
 	@Override
-	public void upgradesChanged()
-	{
+	public void upgradesChanged() {
+		if (getInstalledUpgrades(Upgrades.ORE_FILTER) == 0) {
+			oreFilterString = "";
+			filterPredicate = null;
+		}
 		this.updateState();
 	}
 
@@ -57,6 +66,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	{
 		super.readFromNBT( extra );
 		this.getConfig().readFromNBT( extra, "config" );
+		this.oreFilterString = extra.getString("filter");
 	}
 
 	@Override
@@ -64,6 +74,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	{
 		super.writeToNBT( extra );
 		this.getConfig().writeToNBT( extra, "config" );
+		extra.setString("filter", this.oreFilterString);
 	}
 
 	@Override
@@ -176,5 +187,16 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	AppEngInternalAEInventory getConfig()
 	{
 		return this.config;
+	}
+
+	@Override
+	public String getFilter() {
+		return oreFilterString;
+	}
+
+	@Override
+	public void setFilter(String filter) {
+		oreFilterString = filter;
+		filterPredicate = null;
 	}
 }

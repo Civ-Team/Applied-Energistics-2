@@ -45,6 +45,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	private int capacityUpgrades = 0;
 	private int inverterUpgrades = 0;
 	private int craftingUpgrades = 0;
+	private int oreFilterUpgrades = 0;
 	private int patternCapacityUpgrades = 0;
 
 	public UpgradeInventory( final IAEAppEngInventory parent, final int s )
@@ -84,6 +85,8 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 				return this.inverterUpgrades;
 			case CRAFTING:
 				return this.craftingUpgrades;
+			case ORE_FILTER:
+				return this.oreFilterUpgrades;
 			default:
 				return 0;
 		}
@@ -94,7 +97,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	private void updateUpgradeInfo()
 	{
 		this.cached = true;
-		this.patternCapacityUpgrades = this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = 0;
+		this.patternCapacityUpgrades = this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = this.oreFilterUpgrades = 0;
 
 		for( final ItemStack is : this )
 		{
@@ -127,6 +130,9 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 				case CRAFTING:
 					this.craftingUpgrades++;
 					break;
+				case ORE_FILTER:
+					this.oreFilterUpgrades++;
+					break;
 				default:
 					break;
 			}
@@ -139,6 +145,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 		this.inverterUpgrades = Math.min( this.inverterUpgrades, this.getMaxInstalled( Upgrades.INVERTER ) );
 		this.craftingUpgrades = Math.min( this.craftingUpgrades, this.getMaxInstalled( Upgrades.CRAFTING ) );
 		this.patternCapacityUpgrades = Math.min( this.patternCapacityUpgrades, this.getMaxInstalled( Upgrades.PATTERN_CAPACITY ) );
+		this.oreFilterUpgrades = Math.min( this.oreFilterUpgrades, this.getMaxInstalled( Upgrades.ORE_FILTER ) );
 	}
 
 	@Override

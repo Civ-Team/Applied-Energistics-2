@@ -24,6 +24,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import appeng.container.implementations.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -40,17 +41,6 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.container.AEBaseContainer;
-import appeng.container.implementations.ContainerCellWorkbench;
-import appeng.container.implementations.ContainerCraftConfirm;
-import appeng.container.implementations.ContainerCraftingCPU;
-import appeng.container.implementations.ContainerCraftingStatus;
-import appeng.container.implementations.ContainerLevelEmitter;
-import appeng.container.implementations.ContainerNetworkTool;
-import appeng.container.implementations.ContainerPatternTerm;
-import appeng.container.implementations.ContainerPriority;
-import appeng.container.implementations.ContainerQuartzKnife;
-import appeng.container.implementations.ContainerSecurityStation;
-import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.ContainerFluidLevelEmitter;
@@ -155,6 +145,11 @@ public class PacketValueConfig extends AppEngPacket
 		{
 			final ContainerPriority pc = (ContainerPriority) c;
 			pc.setPriority( Integer.parseInt( this.Value ), player );
+		}
+		else if( this.Name.equals( "OreFilter" ) && c instanceof ContainerOreFilter)
+		{
+			final ContainerOreFilter fc = (ContainerOreFilter) c;
+			fc.setFilter(this.Value);
 		}
 		else if( this.Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
 		{

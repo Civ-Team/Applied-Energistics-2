@@ -21,17 +21,12 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.api.config.*;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
@@ -53,6 +48,7 @@ public class GuiUpgradeable extends AEBaseGui
 	protected GuiImgButton fuzzyMode;
 	protected GuiImgButton craftMode;
 	protected GuiImgButton schedulingMode;
+	protected GuiImgButton oreFilter;
 
 	public GuiUpgradeable( final InventoryPlayer inventoryPlayer, final IUpgradeableHost te )
 	{
@@ -87,11 +83,13 @@ public class GuiUpgradeable extends AEBaseGui
 		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		this.craftMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY, YesNo.NO );
 		this.schedulingMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT );
+		this.oreFilter = new GuiImgButton( this.guiLeft - 18, this.guiTop + 28, Settings.ACTIONS, ActionItems.ORE_FILTER);
 
 		this.buttonList.add( this.craftMode );
 		this.buttonList.add( this.redstoneMode );
 		this.buttonList.add( this.fuzzyMode );
 		this.buttonList.add( this.schedulingMode );
+		this.buttonList.add( this.oreFilter );
 	}
 
 	@Override
@@ -146,7 +144,7 @@ public class GuiUpgradeable extends AEBaseGui
 		}
 		if( this.fuzzyMode != null )
 		{
-			this.fuzzyMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 );
+			this.fuzzyMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.FUZZY ) > 0 && this.bc.getInstalledUpgrades( Upgrades.ORE_FILTER ) == 0);
 		}
 		if( this.craftMode != null )
 		{

@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import appeng.helpers.IOreFilterable;
+import appeng.util.prioritylist.OreFilteredList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -93,7 +95,7 @@ import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
 
-public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost
+public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost, IOreFilterable
 {
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_base" );
@@ -116,6 +118,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	private int handlerHash = 0;
 	private boolean wasActive = false;
 	private byte resetCacheLogic = 0;
+	private String oreFilterString = "";
 
 	@Reflected
 	public PartStorageBus( final ItemStack is )
@@ -186,6 +189,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	public void upgradesChanged()
 	{
 		super.upgradesChanged();
+		if (getInstalledUpgrades(Upgrades.ORE_FILTER) == 0) {
+			this.oreFilterString = "";
+		}
 		this.resetCache( true );
 	}
 
@@ -195,6 +201,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		super.readFromNBT( data );
 		this.Config.readFromNBT( data, "config" );
 		this.priority = data.getInteger( "priority" );
+		this.oreFilterString = data.getString("filter");
 	}
 
 	@Override
@@ -203,6 +210,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		super.writeToNBT( data );
 		this.Config.writeToNBT( data, "config" );
 		data.setInteger( "priority", this.priority );
+		data.setString("filter", this.oreFilterString);
 	}
 
 	@Override
@@ -477,28 +485,24 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 				this.handler.setBaseAccess( (AccessRestriction) this.getConfigManager().getSetting( Settings.ACCESS ) );
 				this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
 				this.handler.setPriority( this.priority );
+				if (this.oreFilterString.isEmpty()) {
+					final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
 
-				final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
-
-				final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
-				for( int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++ )
-				{
-					final IAEItemStack is = this.Config.getAEStackInSlot( x );
-					if( is != null )
-					{
-						priorityList.add( is );
+					final int slotsToUse = 18 + this.getInstalledUpgrades(Upgrades.CAPACITY) * 9;
+					for (int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++) {
+						final IAEItemStack is = this.Config.getAEStackInSlot(x);
+						if (is != null) {
+							priorityList.add(is);
+						}
 					}
-				}
 
-				if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-				{
-					this.handler
-							.setPartitionList( new FuzzyPriorityList<IAEItemStack>( priorityList, (FuzzyMode) this.getConfigManager()
-									.getSetting( Settings.FUZZY_MODE ) ) );
-				}
-				else
-				{
-					this.handler.setPartitionList( new PrecisePriorityList<IAEItemStack>( priorityList ) );
+					if (this.getInstalledUpgrades(Upgrades.FUZZY) > 0) {
+						this.handler.setPartitionList(new FuzzyPriorityList<>(priorityList, (FuzzyMode) this.getConfigManager().getSetting(Settings.FUZZY_MODE)));
+					} else {
+						this.handler.setPartitionList(new PrecisePriorityList<>(priorityList));
+					}
+				}else {
+					this.handler.setPartitionList(new OreFilteredList(oreFilterString));
 				}
 
 				if( inv instanceof IBaseMonitor )
@@ -643,5 +647,16 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	public GuiBridge getGuiBridge()
 	{
 		return GuiBridge.GUI_STORAGEBUS;
+	}
+
+	@Override
+	public String getFilter() {
+		return oreFilterString;
+	}
+
+	@Override
+	public void setFilter(String filter) {
+		oreFilterString = filter;
+		resetCache(true);
 	}
 }

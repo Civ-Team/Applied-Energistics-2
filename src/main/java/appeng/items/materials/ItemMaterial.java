@@ -152,6 +152,8 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	{
 		switch( this.getTypeByStack( itemstack ) )
 		{
+			case CardOreFilter:
+				return Upgrades.ORE_FILTER;
 			case CardPatternCapacity:
 				return Upgrades.PATTERN_CAPACITY;
 			case CARD_CAPACITY:

@@ -195,6 +195,9 @@ public enum GuiText
 	SmallFontCraft,
 	LargeFontCraft,
 
+	// oredictionary filter GUI label
+	OreFilterLabel,
+
 	// Used in a ME Interface when no appropriate TileEntity was detected near it
 	Nothing;
 

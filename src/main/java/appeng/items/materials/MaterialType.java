@@ -120,7 +120,9 @@ public enum MaterialType
 	FLUID_CELL16K_PART( 56, "material_fluid_cell16k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
 	FLUID_CELL64K_PART( 57, "material_fluid_cell64k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
 
-	CardPatternCapacity( 58, "material_card_pattern_capacity" ,EnumSet.of(AEFeature.ADVANCED_CARDS));
+	CardPatternCapacity( 58, "material_card_pattern_capacity" ,EnumSet.of(AEFeature.ADVANCED_CARDS)),
+
+	CardOreFilter( 59,"material_card_ore_filter",EnumSet.of(AEFeature.ADVANCED_CARDS) );
 
 	private final Set<AEFeature> features;
 	private final ModelResourceLocation model;
