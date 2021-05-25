@@ -402,21 +402,27 @@ final class Registration
 		// Storage Cells
 		Upgrades.FUZZY.registerItem( items.cell1k(), 1 );
 		Upgrades.INVERTER.registerItem( items.cell1k(), 1 );
+		Upgrades.ORE_FILTER.registerItem( items.cell1k(), 1 );
 
 		Upgrades.FUZZY.registerItem( items.cell4k(), 1 );
 		Upgrades.INVERTER.registerItem( items.cell4k(), 1 );
+		Upgrades.ORE_FILTER.registerItem( items.cell4k(), 1 );
 
 		Upgrades.FUZZY.registerItem( items.cell16k(), 1 );
 		Upgrades.INVERTER.registerItem( items.cell16k(), 1 );
+		Upgrades.ORE_FILTER.registerItem( items.cell16k(), 1 );
 
 		Upgrades.FUZZY.registerItem( items.cell64k(), 1 );
 		Upgrades.INVERTER.registerItem( items.cell64k(), 1 );
+		Upgrades.ORE_FILTER.registerItem( items.cell64k(), 1 );
 
 		Upgrades.FUZZY.registerItem( items.portableCell(), 1 );
 		Upgrades.INVERTER.registerItem( items.portableCell(), 1 );
+		Upgrades.ORE_FILTER.registerItem( items.portableCell(), 1 );
 
 		Upgrades.FUZZY.registerItem( items.viewCell(), 1 );
 		Upgrades.INVERTER.registerItem( items.viewCell(), 1 );
+		Upgrades.ORE_FILTER.registerItem( items.viewCell(), 1 );
 
 		// Storage Bus
 		Upgrades.FUZZY.registerItem( parts.storageBus(), 1 );

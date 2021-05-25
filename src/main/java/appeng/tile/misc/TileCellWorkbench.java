@@ -21,6 +21,9 @@ package appeng.tile.misc;
 
 import java.util.List;
 
+import appeng.api.implementations.items.IUpgradeModule;
+import appeng.helpers.IOreFilterable;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -43,7 +46,7 @@ import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
 
-public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, IAEAppEngInventory, IConfigManagerHost
+public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, IAEAppEngInventory, IConfigManagerHost, IOreFilterable
 {
 
 	private final AppEngInternalInventory cell = new AppEngInternalInventory( this, 1 );
@@ -140,67 +143,65 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	@Override
 	public int getInstalledUpgrades( final Upgrades u )
 	{
+		final IItemHandler inv = getCellUpgradeInventory();
+		if (inv != null) {
+			for (int x = 0; x < inv.getSlots(); x++) {
+				final ItemStack is = inv.getStackInSlot(x);
+				if (is != null && is.getItem() instanceof IUpgradeModule) {
+					if (((IUpgradeModule) is.getItem()).getType(is) == u)
+						return 1;
+				}
+			}
+		}
 		return 0;
 	}
 
 	@Override
-	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
-	{
-		if( inv == this.cell && !this.locked )
-		{
+	public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack) {
+		if (inv == this.cell && !this.locked) {
 			this.locked = true;
 
 			this.cacheUpgrades = null;
 			this.cacheConfig = null;
 
 			final IItemHandler configInventory = this.getCellConfigInventory();
-			if( configInventory != null )
-			{
+			if (configInventory != null) {
 				boolean cellHasConfig = false;
-				for( int x = 0; x < configInventory.getSlots(); x++ )
-				{
-					if( !configInventory.getStackInSlot( x ).isEmpty() )
-					{
+				for (int x = 0; x < configInventory.getSlots(); x++) {
+					if (!configInventory.getStackInSlot(x).isEmpty()) {
 						cellHasConfig = true;
 						break;
 					}
 				}
 
-				if( cellHasConfig )
-				{
-					for( int x = 0; x < this.config.getSlots(); x++ )
-					{
-						this.config.setStackInSlot( x, configInventory.getStackInSlot( x ) );
+				if (cellHasConfig) {
+					for (int x = 0; x < this.config.getSlots(); x++) {
+						this.config.setStackInSlot(x, configInventory.getStackInSlot(x));
 					}
+				} else {
+					ItemHandlerUtil.copy(this.config, configInventory, false);
 				}
-				else
-				{
-					ItemHandlerUtil.copy( this.config, configInventory, false );
-				}
-			}
-			else if( this.manager.getSetting( Settings.COPY_MODE ) == CopyMode.CLEAR_ON_REMOVE )
-			{
-				for( int x = 0; x < this.config.getSlots(); x++ )
-				{
-					this.config.setStackInSlot( x, ItemStack.EMPTY );
+			} else if (this.manager.getSetting(Settings.COPY_MODE) == CopyMode.CLEAR_ON_REMOVE) {
+				for (int x = 0; x < this.config.getSlots(); x++) {
+					this.config.setStackInSlot(x, ItemStack.EMPTY);
 				}
 
 				this.saveChanges();
 			}
 
 			this.locked = false;
-		}
-		else if( inv == this.config && !this.locked )
-		{
+		} else if (inv == this.config && !this.locked) {
 			this.locked = true;
 			final IItemHandler c = this.getCellConfigInventory();
-			if( c != null )
-			{
-				ItemHandlerUtil.copy( this.config, c, false );
+			if (c != null) {
+				ItemHandlerUtil.copy(this.config, c, false);
 				// copy items back. The ConfigInventory may changed the items on insert
-				ItemHandlerUtil.copy( c, this.config, false );
+				ItemHandlerUtil.copy(c, this.config, false);
 			}
 			this.locked = false;
+		} else if (inv == cacheUpgrades) {
+			if (getInstalledUpgrades(Upgrades.ORE_FILTER) == 0)
+				setFilter("");
 		}
 	}
 
@@ -252,5 +253,20 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 		// nothing here..
+	}
+
+	@Override
+	public String getFilter() {
+		ItemStack is = this.cell.getStackInSlot( 0 );
+		if (is  != null && is.getItem() instanceof ICellWorkbenchItem)
+			return ((ICellWorkbenchItem) is.getItem()).getOreFilter(is);
+		else return "";
+	}
+
+	@Override
+	public void setFilter(String filter) {
+		ItemStack is = this.cell.getStackInSlot( 0 );
+		if (is  != null && is.getItem() instanceof ICellWorkbenchItem)
+			((ICellWorkbenchItem) is.getItem()).setOreFilter(is, filter);
 	}
 }

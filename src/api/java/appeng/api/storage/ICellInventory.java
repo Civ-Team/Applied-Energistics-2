@@ -127,6 +127,8 @@ public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T>
 	 */
 	int getStatusForCell();
 
+	String getOreFilter();
+
 	/**
 	 * Tells the cell to persist to NBT
 	 */

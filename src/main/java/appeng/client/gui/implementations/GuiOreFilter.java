@@ -27,7 +27,7 @@ public class GuiOreFilter extends AEBaseGui {
     @Override
     public void initGui() {
         super.initGui();
-        this.filter = new GuiTextField(this.fontRendererObj, this.guiLeft + 13, this.guiTop + 36, 150, this.fontRendererObj.FONT_HEIGHT);
+        this.filter = new GuiTextField(0, this.fontRenderer, this.guiLeft + 13, this.guiTop + 36, 150, this.fontRenderer.FONT_HEIGHT);
         this.filter.setEnableBackgroundDrawing(false);
         this.filter.setMaxStringLength(32);
         this.filter.setTextColor(0xFFFFFF);
@@ -38,7 +38,7 @@ public class GuiOreFilter extends AEBaseGui {
 
     @Override
     public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.fontRendererObj.drawString( GuiText.OreFilterLabel.getLocal(), 12, 8, 4210752 );
+        this.fontRenderer.drawString( GuiText.OreFilterLabel.getLocal(), 12, 8, 4210752 );
     }
 
     @Override
@@ -49,12 +49,12 @@ public class GuiOreFilter extends AEBaseGui {
     }
 
     @Override
-    protected void keyTyped(final char character, final int key) {
+    protected void keyTyped(final char character, final int key) throws IOException {
         if (key == 28) // Enter
         {
             try
             {
-                NetworkHandler.instance.sendToServer(new PacketValueConfig("OreFilter", this.filter.getText()));
+                NetworkHandler.instance().sendToServer(new PacketValueConfig("OreFilter", this.filter.getText()));
             }
             catch (IOException e)
             {
@@ -70,9 +70,9 @@ public class GuiOreFilter extends AEBaseGui {
                 OriginalGui = GuiBridge.GUI_CELL_WORKBENCH;
 
             if (OriginalGui != null)
-                NetworkHandler.instance.sendToServer( new PacketSwitchGuis( OriginalGui ) );
+                NetworkHandler.instance().sendToServer( new PacketSwitchGuis( OriginalGui ) );
             else
-                this.mc.thePlayer.closeScreen();
+                this.mc.player.closeScreen();
         }
         else if (this.filter.textboxKeyTyped(character, key))
         {

@@ -19,7 +19,13 @@
 package appeng.items.storage;
 
 
+import appeng.core.localization.GuiText;
+import appeng.services.version.Channel;
+import appeng.util.prioritylist.*;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -35,10 +41,8 @@ import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import appeng.util.prioritylist.FuzzyPriorityList;
-import appeng.util.prioritylist.IPartitionList;
-import appeng.util.prioritylist.MergedPriorityList;
-import appeng.util.prioritylist.PrecisePriorityList;
+
+import java.util.List;
 
 
 public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
@@ -63,16 +67,15 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 
 			if( ( currentViewCell.getItem() instanceof ItemViewCell ) )
 			{
-				final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
-
 				final ICellWorkbenchItem vc = (ICellWorkbenchItem) currentViewCell.getItem();
 				final IItemHandler upgrades = vc.getUpgradesInventory( currentViewCell );
 				final IItemHandler config = vc.getConfigInventory( currentViewCell );
 				final FuzzyMode fzMode = vc.getFuzzyMode( currentViewCell );
+				final String filter = vc.getOreFilter(currentViewCell);
 
 				boolean hasInverter = false;
 				boolean hasFuzzy = false;
-
+				boolean hasOreFilter = false;
 				for( int x = 0; x < upgrades.getSlots(); x++ )
 				{
 					final ItemStack is = upgrades.getStackInSlot( x );
@@ -89,33 +92,40 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 								case INVERTER:
 									hasInverter = true;
 									break;
+								case ORE_FILTER:
+									hasOreFilter = true;
+									break;
 								default:
 							}
 						}
 					}
 				}
-
-				for( int x = 0; x < config.getSlots(); x++ )
-				{
-					final ItemStack is = config.getStackInSlot( x );
-					if( !is.isEmpty() )
+				if (hasOreFilter && !filter.isEmpty()) {
+					myMergedList.addNewList(new OreFilteredList(filter), !hasInverter);
+				}else{
+					final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+					for( int x = 0; x < config.getSlots(); x++ )
 					{
-						priorityList.add( AEItemStack.fromItemStack( is ) );
-					}
-				}
-
-				if( !priorityList.isEmpty() )
-				{
-					if( hasFuzzy )
-					{
-						myMergedList.addNewList( new FuzzyPriorityList<>( priorityList, fzMode ), !hasInverter );
-					}
-					else
-					{
-						myMergedList.addNewList( new PrecisePriorityList<>( priorityList ), !hasInverter );
+						final ItemStack is = config.getStackInSlot( x );
+						if( !is.isEmpty() )
+						{
+							priorityList.add( AEItemStack.fromItemStack( is ) );
+						}
 					}
 
-					myPartitionList = myMergedList;
+					if( !priorityList.isEmpty() )
+					{
+						if( hasFuzzy )
+						{
+							myMergedList.addNewList( new FuzzyPriorityList<>( priorityList, fzMode ), !hasInverter );
+						}
+						else
+						{
+							myMergedList.addNewList( new PrecisePriorityList<>( priorityList ), !hasInverter );
+						}
+
+						myPartitionList = myMergedList;
+					}
 				}
 			}
 		}
@@ -159,5 +169,22 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 	public void setFuzzyMode( final ItemStack is, final FuzzyMode fzMode )
 	{
 		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
+	}
+
+	@Override
+	public String getOreFilter(ItemStack is) {
+		return Platform.openNbtData( is ).getString( "OreFilter" );
+	}
+
+	@Override
+	public void setOreFilter(ItemStack is, String filter) {
+		Platform.openNbtData( is ).setString("OreFilter", filter);
+	}
+	@Override
+	public void addCheckedInformation(final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
+	{
+		String filter = getOreFilter(stack);
+		if (!filter.isEmpty())
+			lines.add(GuiText.PartitionedOre.getLocal() + " : " + filter);
 	}
 }

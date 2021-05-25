@@ -552,4 +552,14 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		this.cycleColors( is, this.getColor( is ), up ? 1 : -1 );
 	}
+
+	@Override
+	public String getOreFilter(ItemStack is) {
+		return Platform.openNbtData( is ).getString( "OreFilter" );
+	}
+
+	@Override
+	public void setOreFilter(ItemStack is, String filter) {
+		Platform.openNbtData( is ).setString("OreFilter", filter);
+	}
 }

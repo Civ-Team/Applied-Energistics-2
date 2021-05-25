@@ -177,7 +177,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_CRAFTING_STATUS( ContainerCraftingStatus.class, ITerminalHost.class, GuiHostType.ITEM_OR_WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_ORE_FILTER(ContainerOreFilter .class, IOreFilterable.class, GuiHostType.WORLD, SecurityPermissions.BUILD);
+	GUI_ORE_FILTER(ContainerOreFilter .class, IOreFilterable.class,  GuiHostType.ITEM_OR_WORLD, null );
 
 
 	private final Class tileClass;

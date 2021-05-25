@@ -19,6 +19,7 @@
 package appeng.items.storage;
 
 
+import appeng.util.Platform;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -93,5 +94,15 @@ public final class BasicItemStorageCell extends AbstractStorageCell<IAEItemStack
 				player.dropItem( extraA, false );
 			}
 		} );
+	}
+
+	@Override
+	public String getOreFilter(ItemStack is) {
+		return Platform.openNbtData( is ).getString( "OreFilter" );
+	}
+
+	@Override
+	public void setOreFilter(ItemStack is, String filter) {
+		Platform.openNbtData( is ).setString("OreFilter", filter);
 	}
 }

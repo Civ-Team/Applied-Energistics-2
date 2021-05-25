@@ -68,4 +68,16 @@ public interface ICellWorkbenchItem
 	 * sets the setting on the cell.
 	 */
 	void setFuzzyMode( ItemStack is, FuzzyMode fzMode );
+
+	/**
+	 * @param is cell item
+	 * @return current ore dictionary filter
+	 */
+	String getOreFilter(ItemStack is);
+
+	/**
+	 * @param is cell item
+	 * @param filter new ore dictionary filter
+	 */
+	void setOreFilter(ItemStack is, String filter);
 }

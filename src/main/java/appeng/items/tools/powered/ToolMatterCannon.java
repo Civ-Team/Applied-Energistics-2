@@ -531,4 +531,14 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 	{
 		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
+
+	@Override
+	public String getOreFilter(ItemStack is) {
+		return Platform.openNbtData( is ).getString( "OreFilter" );
+	}
+
+	@Override
+	public void setOreFilter(ItemStack is, String filter) {
+		Platform.openNbtData( is ).setString("OreFilter", filter);
+	}
 }

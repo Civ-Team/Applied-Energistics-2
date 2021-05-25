@@ -188,6 +188,7 @@ public enum GuiText
 	Included,
 	Excluded,
 	Partitioned,
+	PartitionedOre,
 	Precise,
 	Fuzzy,
 

@@ -19,6 +19,10 @@
 package appeng.me.storage;
 
 
+import appeng.api.AEApi;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.util.prioritylist.IPartitionList;
+import appeng.util.prioritylist.OreFilteredList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.IItemHandler;
@@ -50,16 +54,16 @@ public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventor
 		super( c, channel );
 
 		final ICellInventory ci = this.getCellInv();
-		if( ci != null )
-		{
-			final IItemList<T> priorityList = channel.createList();
+		if( ci != null ) {
 
 			final IItemHandler upgrades = ci.getUpgradesInventory();
 			final IItemHandler config = ci.getConfigInventory();
 			final FuzzyMode fzMode = ci.getFuzzyMode();
+			final String filter = ci.getOreFilter();
 
 			boolean hasInverter = false;
 			boolean hasFuzzy = false;
+			boolean hasOreFilter = false;
 
 			for( int x = 0; x < upgrades.getSlots(); x++ )
 			{
@@ -77,36 +81,36 @@ public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventor
 							case INVERTER:
 								hasInverter = true;
 								break;
+							case ORE_FILTER:
+								hasOreFilter = true;
+								break;
 							default:
 						}
 					}
 				}
 			}
+			this.setWhitelist(hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST);
+			if (hasOreFilter && !filter.isEmpty()) {
+				this.setPartitionList((IPartitionList<T>) new OreFilteredList(filter));
+			} else {
+				final IItemList<T> priorityList = channel.createList();
 
-			for( int x = 0; x < config.getSlots(); x++ )
-			{
-				final ItemStack is = config.getStackInSlot( x );
-				if( !is.isEmpty() )
-				{
-					final T configItem = channel.createStack( is );
-					if( configItem != null )
-					{
-						priorityList.add( configItem );
+				for (int x = 0; x < config.getSlots(); x++) {
+					final ItemStack is = config.getStackInSlot(x);
+					if (!is.isEmpty()) {
+						final T configItem = channel.createStack(is);
+						if (configItem != null) {
+							priorityList.add(configItem);
+						}
 					}
 				}
-			}
 
-			this.setWhitelist( hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
-
-			if( !priorityList.isEmpty() )
-			{
-				if( hasFuzzy )
-				{
-					this.setPartitionList( new FuzzyPriorityList<>( priorityList, fzMode ) );
-				}
-				else
-				{
-					this.setPartitionList( new PrecisePriorityList<>( priorityList ) );
+				if (!priorityList.isEmpty()) {
+					if (hasFuzzy) {
+						this.setPartitionList(new FuzzyPriorityList<>(priorityList, fzMode));
+					} else {
+						this.setPartitionList(new PrecisePriorityList<>(priorityList));
+					}
 				}
 			}
 		}

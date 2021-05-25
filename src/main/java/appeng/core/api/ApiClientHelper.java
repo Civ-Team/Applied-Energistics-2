@@ -34,15 +34,17 @@ public class ApiClientHelper implements IClientHelper
 
 		if( handler.isPreformatted() )
 		{
-			final String list = ( handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included : GuiText.Excluded ).getLocal();
+			String filter = cellInventory.getOreFilter();
+			if (filter.isEmpty()) {
+				final String list = (handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included : GuiText.Excluded).getLocal();
 
-			if( handler.isFuzzy() )
-			{
-				lines.add( GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Fuzzy.getLocal() );
-			}
-			else
-			{
-				lines.add( GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Precise.getLocal() );
+				if (handler.isFuzzy()) {
+					lines.add(GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Fuzzy.getLocal());
+				} else {
+					lines.add(GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Precise.getLocal());
+				}
+			} else {
+				lines.add(GuiText.PartitionedOre.getLocal() + " : " + filter);
 			}
 		}
 

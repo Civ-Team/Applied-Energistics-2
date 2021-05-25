@@ -99,4 +99,13 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 			}
 		}
 	}
+
+	@Override
+	public String getOreFilter(ItemStack is) {
+		return "";
+	}
+
+	@Override
+	public void setOreFilter(ItemStack is, String filter) {
+	}
 }

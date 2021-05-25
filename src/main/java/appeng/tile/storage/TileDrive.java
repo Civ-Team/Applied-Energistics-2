@@ -377,6 +377,11 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
+	public String getOreFilter() {
+		return null;
+	}
+
+	@Override
 	public void saveChanges( final ICellInventory<?> cellInventory )
 	{
 		this.world.markChunkDirty( this.pos, this );

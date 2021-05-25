@@ -240,6 +240,7 @@ gui.appliedenergistics2.inWorldCraftingPresses=压印模板可以在陨石块的
 gui.appliedenergistics2.Included=包含匹配
 gui.appliedenergistics2.Excluded=排除匹配
 gui.appliedenergistics2.Partitioned=分区
+gui.appliedenergistics2.PartitionedOre=Ore dictionary filter
 gui.appliedenergistics2.Precise=精确匹配
 gui.appliedenergistics2.Fuzzy=模糊匹配
 gui.appliedenergistics2.SmallFontCraft=Craft

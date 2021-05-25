@@ -195,11 +195,11 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 						filterPredicate = OreFilteredList.makeFilter(oreFilterString);
 					}
 					for (ItemSlot slot : myAdaptor) {
-						if (this.itemToSend <= 0){
+						if (this.itemsToSend <= 0){
 							break;
 						}
 						if (slot.isExtractable() && filterPredicate.test(slot.getAEItemStack())) {
-							while (this.itemToSend > 0) {
+							while (this.itemsToSend > 0) {
 								if (this.importStuff(myAdaptor, slot.getAEItemStack(), inv, energy, fzMode)){
 									break;
 								}

@@ -68,11 +68,13 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		this.copyMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 48, 11 * 16 + 5, 12 * 16 + 5, GuiText.CopyMode.getLocal(), GuiText.CopyModeDesc
 				.getLocal() );
 		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
+		this.oreFilter = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.ACTIONS, ActionItems.ORE_FILTER );
 
 		this.buttonList.add( this.fuzzyMode );
 		this.buttonList.add( this.partition );
 		this.buttonList.add( this.clear );
 		this.buttonList.add( this.copyMode );
+		this.buttonList.add( this.oreFilter );
 	}
 
 	@Override
@@ -137,6 +139,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		this.copyMode.setState( this.workbench.getCopyMode() == CopyMode.CLEAR_ON_REMOVE );
 
 		boolean hasFuzzy = false;
+		boolean hasOreFilter = false;
 		final IItemHandler inv = this.workbench.getCellUpgradeInventory();
 		for( int x = 0; x < inv.getSlots(); x++ )
 		{
@@ -147,9 +150,14 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				{
 					hasFuzzy = true;
 				}
+				if( ( (IUpgradeModule) is.getItem() ).getType( is ) == Upgrades.ORE_FILTER )
+				{
+					hasOreFilter = true;
+				}
 			}
 		}
-		this.fuzzyMode.setVisibility( hasFuzzy );
+		this.fuzzyMode.setVisibility( !hasOreFilter && hasFuzzy );
+		this.oreFilter.setVisibility( hasOreFilter );
 	}
 
 	@Override
