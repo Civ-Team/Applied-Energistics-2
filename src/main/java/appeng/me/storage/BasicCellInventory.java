@@ -285,4 +285,9 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
 
 		return true;
 	}
+
+	@Override
+	public String getOreFilter() {
+		return null;
+	}
 }

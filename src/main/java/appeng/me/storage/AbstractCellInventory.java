@@ -244,6 +244,11 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	{
 		return this.cellType.getFuzzyMode( this.i );
 	}
+	@Override
+	public String getOreFilter()
+	{
+		return this.cellType.getOreFilter( this.i );
+	}
 
 	@Override
 	public IItemHandler getConfigInventory()

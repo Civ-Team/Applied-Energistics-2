@@ -158,6 +158,16 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	}
 
 	@Override
+	public String getOreFilter(ItemStack is) {
+		return Platform.openNbtData( is ).getString( "OreFilter" );
+	}
+
+	@Override
+	public void setOreFilter(ItemStack is, String filter) {
+		Platform.openNbtData( is ).setString("OreFilter", filter);
+	}
+
+	@Override
 	public ActionResult<ItemStack> onItemRightClick( final World world, final EntityPlayer player, final EnumHand hand )
 	{
 		this.disassembleDrive( player.getHeldItem( hand ), world, player );
