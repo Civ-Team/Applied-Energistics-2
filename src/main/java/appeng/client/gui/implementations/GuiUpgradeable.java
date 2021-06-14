@@ -22,6 +22,8 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 
 import appeng.api.config.*;
+import appeng.core.sync.GuiBridge;
+import appeng.core.sync.packets.PacketSwitchGuis;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -154,6 +156,10 @@ public class GuiUpgradeable extends AEBaseGui
 		{
 			this.schedulingMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.CAPACITY ) > 0 && this.bc instanceof PartExportBus );
 		}
+		if( this.oreFilter != null )
+		{
+			this.oreFilter.setVisibility( this.bc.getInstalledUpgrades( Upgrades.ORE_FILTER ) > 0);
+		}
 	}
 
 	protected String getBackground()
@@ -196,6 +202,10 @@ public class GuiUpgradeable extends AEBaseGui
 		if( btn == this.schedulingMode )
 		{
 			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.schedulingMode.getSetting(), backwards ) );
+		}
+		if( btn == this.oreFilter )
+		{
+			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_ORE_FILTER ) );
 		}
 	}
 }

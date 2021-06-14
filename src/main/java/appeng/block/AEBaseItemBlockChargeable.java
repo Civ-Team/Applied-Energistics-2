@@ -22,6 +22,7 @@ package appeng.block;
 import java.text.MessageFormat;
 import java.util.List;
 
+import appeng.api.config.PowerMultiplier;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -132,13 +133,13 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 		{
 			if( blockID == block )
 			{
-				return 200000;
+				return 200000 * PowerMultiplier.CONFIG.multiplier;
 			}
 			else
 			{
-				return 8 * 200000;
+				return 8 * 200000* PowerMultiplier.CONFIG.multiplier;
 			}
-		} ).orElse( 0 );
+		} ).orElse((double) 0);
 	}
 
 	private double getInternal( final ItemStack is )

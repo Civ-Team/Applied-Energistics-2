@@ -149,9 +149,8 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer {
             final InventoryAdaptor playerHand = new AdaptorItemHandler(new WrapperCursorItemHandler(player.inventory));
 
             // final IInventory theSlot = slotInv.getWrapper(slot + inv.offset);
-            final IItemHandler theSlot = new WrapperFilteredItemHandler(new WrapperRangeItemHandler(inv.server, slot, slot + 1), new PatternSlotFilter());
+            final IItemHandler theSlot = new WrapperFilteredItemHandler(new WrapperRangeItemHandler(inv.server, slot + inv.offset, slot + inv.offset + 1), new PatternSlotFilter());
             final InventoryAdaptor interfaceSlot = new AdaptorItemHandler(theSlot);
-
             switch (action) {
                 case PICKUP_OR_SET_DOWN:
 
@@ -244,7 +243,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer {
                     final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
                     final DualityInterface dual = ih.getInterfaceDuality();
                     if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
-                        for (int i = 0; i <= dual.getInstalledUpgrades(Upgrades.PATTERN_CAPACITY); ++i) {
+                        for (int i = 0; i <= dual.getInstalledUpgrades(Upgrades.PATTERN_CAPACITY); i++) {
                             this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName(), i * 9, 9));
                         }
                     }
@@ -254,7 +253,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer {
                     final IInterfaceHost ih = (IInterfaceHost) gn.getMachine();
                     final DualityInterface dual = ih.getInterfaceDuality();
                     if (gn.isActive() && dual.getConfigManager().getSetting(Settings.INTERFACE_TERMINAL) == YesNo.YES) {
-                        for (int i = 0; i <= dual.getInstalledUpgrades(Upgrades.PATTERN_CAPACITY); ++i) {
+                        for (int i = 0; i <= dual.getInstalledUpgrades(Upgrades.PATTERN_CAPACITY); i++) {
                             this.diList.put(ih, new InvTracker(dual, dual.getPatterns(), dual.getTermName(), i * 9, 9));
                         }
                     }
@@ -266,7 +265,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer {
 
         for (final InvTracker inv : this.diList.values()) {
             this.byId.put(inv.which, inv);
-            this.addItems(data, inv, 0, inv.server.getSlots());
+            this.addItems(data, inv, 0, inv.client.getSlots());
         }
     }
 
